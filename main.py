@@ -11,8 +11,9 @@ zombie =[[128,16, 12,14]]#position de tuile
 SKIN = 0
 
 
-
+LISTE_BALLES = []
 LISTE_ENTITES =[]
+VITESSE_BALLES = 3
 
 width = 128
 height = 128
@@ -40,6 +41,7 @@ def creation_mob():
         if pyxel.frame_count % randint(10, 20) == 0 and len(LISTE_ENTITES) < 5:
             
             LISTE_ENTITES.append([pyxel.width-15, randint(10, pyxel.height-10)])
+            
        
             
         
@@ -76,6 +78,9 @@ def update():
     
     if STATUT_GAME == "PLAYING":
         creation_mob()
+        if pyxel.frame_count % 30*5 ==0:
+            generation_balles_mages()
+            bouger_balles()
         # for entite in list_entites:
         #     mouv_mob(entite)
         pyxel.frame_count +=1
@@ -106,20 +111,43 @@ def update():
             
 
         
-     
+def generation_balles_mages():
+    global LISTE_BALLES
+    print(LISTE_ENTITES)
+    LISTE_BALLES = LISTE_ENTITES.copy()
+    
+    
+def bouger_balles():
+    global VITESSE_BALLES, LISTE_BALLES
+    print(LISTE_BALLES)
+    for i in range (len(LISTE_BALLES)):
+        LISTE_BALLES[i][0] -= VITESSE_BALLES
+    print(LISTE_BALLES)
+
     
 
 
+
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,STAT
+    global LISTE_ENTITES,STATUT_GAME
+    
+    
     
     
 
     if STATUT_GAME == "PLAYING":
         pyxel.cls(6)
+        pyxel.frame_count
+
+        
+            
+        
     
         for i in range(VIE):
             pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
+        for v in LISTE_BALLES:
+            print('v',v)
+            pyxel.blt(v[0],v[1], 0,0,40,80,8,8)
 
         
 
@@ -129,6 +157,8 @@ def draw():
         
         for entite in LISTE_ENTITES:
             mob(entite[0], entite[1], zombie)
+        
+        
     
     if STATUT_GAME == "END":
         pyxel.cls(6)
