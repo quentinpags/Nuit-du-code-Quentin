@@ -16,9 +16,14 @@ class Perso:
         pyxel.run(self.update, self.draw)
 
 
-        def update():
-            if pyxel.btn(pyxel.KEY_RIGHT):
-                self.x += 1
+    def update(self):
+        if pyxel.btn(pyxel.KEY_RIGHT):
+            self.x += 1
+        elif pyxel.btn(pyxel.KEY_LEFT):
+            self.x -= 1
 
-        def draw():
-            pyxel.blt(self.x, self.y, 0, 0, 16, 16, 16)
+    def draw(self):
+        pyxel.blt(self.x, self.y, 0, 0, 16, 16, 16)
+
+
+Perso()
