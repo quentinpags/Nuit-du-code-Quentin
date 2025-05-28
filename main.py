@@ -1,51 +1,64 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 28 08:07:37 2025
+
+@author: Hugo
+"""
+
 import pyxel
+from random import randint
+zombie =[65, 17, 12,14]#position de tuile
+
+list_entites =[]
 
 width = 128
 height = 128
-MODE ="DEV"
-
-pyxel.init(width, height, title='cheuvalliay')
+pyxel.init(width, height, title="Chevalliay")
 pyxel.load("2.pyxres")
+pyxel.frame_count = 0#nb de frame
 
-class Perso:
+class Mob():
     def __init__(self):
-        self.width = width
-        self.height = height
-        self.x = width//2
-        self.y = height//2
-        print("self.y", self.y)
-
-
-        pyxel.run(self.update, self.draw)
-
-
-    def update(self):
-        # if pyxel.btn(pyxel.KEY_RIGHT):
-        #     self.x += 1
-        #     print(self.x)
-        # elif pyxel.btn(pyxel.KEY_LEFT):
-        #     self.x -= 1
-        if pyxel.btn(pyxel.KEY_UP):
-            self.y += -1
-        elif pyxel.btn(pyxel.KEY_DOWN):
-            self.y += +1
-
-
-    def draw(self):
-        pyxel.cls(0)
-        pyxel.blt(self.x, self.y, 0, 0, 16, 16, 16, colkey=2, )
-        pyxel.blt(self.x, self.y+8, 0, 32, 112, 16, 16, colkey=2)
-
-
-        
-
+        self.vie = 3
+        self.degats = 1        
         
         
+    def creation_mob():
+        global list_entites
         
+        if pyxel.frame_count % randint(10, 20) == 0 and len(list_entites) < 5:
+            
+            list_entites.append([randint(30,128) , 110])
+       
+            
         
+    def mouv_mob(entite):
         
+        entite[0]-=1
+        if entite[0] <= 0:
+            list_entites.remove(entite)
+        
+    def mob(pos_x, pos_y, type_mob):
+        """affiche un mob a une position pos_x, pos_y, avec le type_mob"""
+        
+        pyxel.blt(pos_x, pos_y, 0, type_mob[0], type_mob[1], type_mob[2],
+                  type_mob[3], colkey=2)
+        
+def update():
+    print(list_entites)
+    Mob.creation_mob()
+    # for entite in list_entites:
+    #     mouv_mob(entite)
+    pyxel.frame_count +=1
+
+
+def draw():
+    pyxel.cls(0)
+    global list_entites
+    for entite in list_entites:
+        Mob.mob(entite[0], entite[1], zombie)
 
 
 
 
-Perso()
+pyxel.run(update, draw)
