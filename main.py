@@ -74,7 +74,8 @@ def mort():
     
     
 def update():
-    global SKIN
+    global SKIN,STATUT_GAME
+     
     if pyxel.frame_count % 4 == 0:
         SKIN +=1
         if SKIN >2:
@@ -83,29 +84,45 @@ def update():
     # for entite in list_entites:
     #     mouv_mob(entite)
     pyxel.frame_count +=1
+    if STATUT_GAME == "PLAYING":
 
-    if pyxel.btn(pyxel.KEY_UP):
-        global PLAYER_Y, VITESSE
-        PLAYER_Y += -VITESSE
+        if pyxel.btn(pyxel.KEY_UP):
+            global PLAYER_Y, VITESSE
+            PLAYER_Y += -VITESSE
+
+        elif pyxel.btn(pyxel.KEY_DOWN):
+            PLAYER_Y += VITESSE
+
+        
+
+    if pyxel.btnp(pyxel.KEY_RIGHT):
+        
+        if STATUT_GAME == "PAUSE":
+            STATUT_GAME = "PLAYING"
+
+        else:
+            STATUT_GAME = "PAUSE"
 
     if pyxel.btn(pyxel.KEY_LEFT):
-        global VIE
-        mort()
+            global VIE
+            mort()
+            
 
+        
      
-    elif pyxel.btn(pyxel.KEY_DOWN):
-        PLAYER_Y += +VITESSE
+    
 
 
 def draw():
     global LISTE_ENTITES,STATUT_GAME,STAT
-    pyxel.cls(6)
     
-    for i in range(VIE):
-        pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
     
 
     if STATUT_GAME == "PLAYING":
+        pyxel.cls(6)
+    
+        for i in range(VIE):
+            pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
 
         
 
@@ -117,11 +134,21 @@ def draw():
             mob(entite[0], entite[1], zombie)
     
     if STATUT_GAME == "END":
+        pyxel.cls(6)
+    
+    
         if pyxel.frame_count % 30 < 25:  # visible pendant 15 frames sur 30
             pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "You Lose", 7)
             chaine_de_caractere = "PUSH ENTER TO START"
             # pyxel.text((pyxel.height-114)//2, (pyxel.width-114)//2, 7)
             pyxel.text((pyxel.width - len(chaine_de_caractere) * 4) // 2, (pyxel.height - 8) // 2, chaine_de_caractere, 7)
+    
+    if STATUT_GAME == "PAUSE":
+        
+    
+        for i in range(VIE):
+            pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
+        pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "PAUSE", 7)
 
 
 
