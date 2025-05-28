@@ -26,7 +26,7 @@ def tir_fleche_joueur(pos_x, pos_y):#du joueur
         
 def creation_fleche(pos_x, pos_y):        
     """creation de fleches de list_fleche"""
-    pyxel.blt(pos_x, pos_y, 0, 132, 72, 8, 1)
+    pyxel.blt(pos_x+3, pos_y+7, 0, 132, 72, 8, 1)
     
 def mouv_fleche(fleche):
     global vitesse_balle
