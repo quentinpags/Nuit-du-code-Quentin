@@ -1,4 +1,5 @@
 import pyxel
+
 width = 128
 height = 128
 
@@ -21,6 +22,11 @@ class Perso:
             self.x += 1
         elif pyxel.btn(pyxel.KEY_LEFT):
             self.x -= 1
+        elif pyxel.btn(pyxel.KEY_UP):
+            pass
+        elif pyxel.btn(pyxel.KEY_DOWN):
+            pass
+
 
     def draw(self):
         pyxel.blt(self.x, self.y, 0, 0, 16, 16, 16)
