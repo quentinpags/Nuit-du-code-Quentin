@@ -39,7 +39,7 @@ def creation_mob():
         
         if pyxel.frame_count % randint(10, 20) == 0 and len(LISTE_ENTITES) < 5:
             
-            LISTE_ENTITES.append([pyxel.width-10, randint(0, pyxel.height-20)])
+            LISTE_ENTITES.append([pyxel.width-15, randint(10, pyxel.height-10)])
        
             
         
@@ -82,10 +82,13 @@ def update():
 
         if pyxel.btn(pyxel.KEY_UP):
             global PLAYER_Y, VITESSE
-            PLAYER_Y += -VITESSE
+            if PLAYER_Y > 15:
+                PLAYER_Y -= VITESSE
+            
 
         elif pyxel.btn(pyxel.KEY_DOWN):
-            PLAYER_Y += VITESSE
+            if PLAYER_Y < pyxel.height-20:
+                PLAYER_Y += VITESSE
 
         
 
