@@ -7,7 +7,7 @@ Created on Wed May 28 08:07:37 2025
 
 import pyxel
 from random import randint
-zombie =[[65, 17, -12,14],[80,16,-12,15],[97,17,-11,14],[113,17,-11,14]]#position de tuile
+zombie =[[128,16, 12,14]]#position de tuile
 SKIN = 0
 
 
@@ -39,15 +39,11 @@ def creation_mob():
         
         if pyxel.frame_count % randint(10, 20) == 0 and len(LISTE_ENTITES) < 5:
             
-            LISTE_ENTITES.append([randint(30,128) , 110])
+            LISTE_ENTITES.append([pyxel.width-10, randint(0, pyxel.height-20)])
        
             
         
-def mouv_mob(entite):
-    
-    entite[0]-=1
-    if entite[0] <= 0:
-        LISTE_ENTITES.remove(entite)
+
     
 def mob(pos_x, pos_y, type_mob):
     """affiche un mob a une position pos_x, pos_y, avec le type_mob"""
@@ -76,15 +72,13 @@ def mort():
 def update():
     global SKIN,STATUT_GAME
      
-    if pyxel.frame_count % 4 == 0:
-        SKIN +=1
-        if SKIN >2:
-            SKIN = 0
-    creation_mob()
-    # for entite in list_entites:
-    #     mouv_mob(entite)
-    pyxel.frame_count +=1
+    
+    
     if STATUT_GAME == "PLAYING":
+        creation_mob()
+        # for entite in list_entites:
+        #     mouv_mob(entite)
+        pyxel.frame_count +=1
 
         if pyxel.btn(pyxel.KEY_UP):
             global PLAYER_Y, VITESSE
