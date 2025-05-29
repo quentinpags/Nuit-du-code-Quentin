@@ -1,0 +1,16 @@
+DESCRIPTION :
+Side scrawler shoot them up
+
+BUT :
+Résister le plus longtemps possible
+
+COMMANDES :
+Flèche UP & DOWN mouvement
+SPACE pour tirer
+Pause : fleche droite
+Fin de partie : flèche droite
+
+SPECIFICITES :
+Tirer sur les ennemis pour les faire couler et augmenter votre score
+Eviter les ennemis
+
