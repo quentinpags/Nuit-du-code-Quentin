@@ -4,7 +4,7 @@ Created on Wed May 28 08:07:37 2025
 
 @author: Hugo
 """
-
+import time
 import pyxel
 from random import randint
 zombie =[[128,16, 12,14]]#position de tuile
@@ -102,7 +102,7 @@ def update():
         if STATUT_GAME == "PAUSE":
             STATUT_GAME = "PLAYING"
 
-        else:
+        elif not STATUT_GAME == "END":
             STATUT_GAME = "PAUSE"
 
     if pyxel.btn(pyxel.KEY_LEFT):
@@ -129,7 +129,7 @@ def bouger_balles():
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME
+    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y,FIRST_TIME
     
     
     
@@ -146,7 +146,7 @@ def draw():
         for i in range(VIE):
             pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
         for v in LISTE_BALLES:
-            print('v',v)
+            # print('v',v)
             pyxel.blt(v[0],v[1], 0,0,40,80,8,8)
 
         
@@ -161,7 +161,24 @@ def draw():
         
     
     if STATUT_GAME == "END":
+        
+        
+
+        
+        
+        
+        
+
+
+        
         pyxel.cls(6)
+        
+        pyxel.blt(PLAYER_X,PLAYER_Y, 0,48,112, 16,16, colkey=2)
+        pyxel.blt(PLAYER_X-1, PLAYER_Y+5, 0, 32, 112, 16, 16, colkey=2)
+
+        
+        
+        
     
     
         if pyxel.frame_count % 30 < 25:  # visible pendant 15 frames sur 30
