@@ -4,7 +4,7 @@ Created on Wed May 28 08:07:37 2025
 
 @author: Hugo
 """
-import time
+
 import pyxel
 from random import randint
 zombie =[[128,16, 12,14]]#position de tuile
@@ -23,9 +23,7 @@ pyxel.load("2.pyxres")
 pyxel.frame_count = 0#nb de frame
 
 
-x = width//2
-y = height//2
-print("self.y", y)
+
 
 PLAYER_X = 0
 PLAYER_Y = 50
@@ -81,8 +79,7 @@ def update():
         if pyxel.frame_count % 30*5 ==0:
             generation_balles_mages()
             bouger_balles()
-        # for entite in list_entites:
-        #     mouv_mob(entite)
+        
         pyxel.frame_count +=1
 
         if pyxel.btn(pyxel.KEY_UP):
@@ -112,9 +109,10 @@ def update():
 
         
 def generation_balles_mages():
-    global LISTE_BALLES
+    global LISTE_BALLES, LISTE_ENTITES
     print(LISTE_ENTITES)
     LISTE_BALLES = LISTE_ENTITES.copy()
+    
     
     
 def bouger_balles():
