@@ -10,7 +10,7 @@ from random import randint
 TUILE_ZOMBIE =[[128,16, 12,14]]#position de tuile
 SKIN = 0
 
-
+HITBOX = 8
 LISTE_ENTITES =[]
 LIMITE_VITESSE_BALLES_NIVEAU = 3
 
@@ -28,17 +28,46 @@ HEIGHT = pyxel.height
 PLAYER_X = 0
 PLAYER_Y = 50
 VITESSE = 3
-MODE = "DEV"
+MODE = "PLAYER"
 VIE = 3
 STATUT_GAME = "PLAYING"
+
+
+
+def collision():
+    '''renvoie true s'il y a collision'''
+    global LISTE_ENTITES, PLAYER_X,PLAYER_Y,HITBOX,LIMITE_VITESSE_BALLES_NIVEAU
+    
+    for v in LISTE_ENTITES:
+        if v[2] <= PLAYER_X + HITBOX and v[2] >= PLAYER_X-HITBOX:
+            # verifie les collisions sur les x
+            if v[3] <= PLAYER_Y + HITBOX+5 and v[3] >= PLAYER_Y-HITBOX:
+                # verifie les collisions sur les y
+                print('collision')
+                v[3] += WIDTH
+                v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+                degats_player("-1")
+    
+                
+            # si le bullet est inferieur 
 
 
 def creation_mob():
         global LISTE_ENTITES,WIDTH,HEIGHT,LIMITE_VITESSE_BALLES_NIVEAU
         
+        
+        
+
+
         if randint(0, 5) == 0 and len(LISTE_ENTITES) < 8:
-            val_x = WIDTH-15
-            val_y = randint(10, HEIGHT-10)
+            if len(LISTE_ENTITES) <4:
+                val_y = randint(10, HEIGHT//2)
+            else:
+                val_y = randint(HEIGHT//2, HEIGHT-10)
+
+            val_x = WIDTH-12
+            
+            
             LISTE_ENTITES.append([val_x, val_y,val_x,val_y, randint(1,LIMITE_VITESSE_BALLES_NIVEAU)])
             
        
@@ -97,6 +126,7 @@ def update():
         elif pyxel.btn(pyxel.KEY_DOWN):
             if PLAYER_Y < pyxel.height-20:
                 PLAYER_Y += VITESSE
+        collision()
 
         
 
