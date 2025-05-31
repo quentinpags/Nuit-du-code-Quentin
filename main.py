@@ -7,20 +7,20 @@ Created on Wed May 28 08:07:37 2025
 
 import pyxel
 from random import randint
-zombie =[[128,16, 12,14]]#position de tuile
+TUILE_ZOMBIE =[[128,16, 12,14]]#position de tuile
 SKIN = 0
 
 
-LISTE_BALLES = []
 LISTE_ENTITES =[]
 VITESSE_BALLES = 3
 
-width = 128
-height = 128
-pyxel.init(width, height, title="Chevalliay")
+
+pyxel.init(128, 128, title="Chevalliay")
 #play(0, 2,loop= True)#import de sons
 pyxel.load("2.pyxres")
-pyxel.frame_count = 0#nb de frame
+WIDTH = pyxel.width
+HEIGHT = pyxel.height
+
 
 
 
@@ -34,22 +34,18 @@ STATUT_GAME = "PLAYING"
 
 
 def creation_mob():
-        global LISTE_ENTITES
+        global LISTE_ENTITES,WIDTH,HEIGHT
         
-        if pyxel.frame_count % randint(10, 20) == 0 and len(LISTE_ENTITES) < 5:
-            
-            LISTE_ENTITES.append([pyxel.width-15, randint(10, pyxel.height-10)])
+        if randint(0, 5) == 0 and len(LISTE_ENTITES) < 5:
+            val_x = WIDTH-15
+            val_y = randint(10, HEIGHT-10)
+            LISTE_ENTITES.append([val_x, val_y,val_x,val_y])
             
        
             
         
 
     
-def mob(pos_x, pos_y, type_mob):
-    """affiche un mob a une position pos_x, pos_y, avec le type_mob"""
-    
-    pyxel.blt(pos_x, pos_y, 0, type_mob[SKIN][0], type_mob[SKIN][1], type_mob[SKIN][2],
-              type_mob[SKIN][3], colkey=2)
 
 def degats_player():
     global MODE, VIE
@@ -76,10 +72,8 @@ def update():
     
     if STATUT_GAME == "PLAYING":
         creation_mob()
-        if pyxel.frame_count % 30*5 ==0:
-            generation_balles_mages()
-            bouger_balles()
-        
+        bouger_balles()
+    
         pyxel.frame_count +=1
 
         if pyxel.btn(pyxel.KEY_UP):
@@ -107,27 +101,30 @@ def update():
             mort()
             
 
+    
         
-def generation_balles_mages():
-    global LISTE_BALLES, LISTE_ENTITES
-    print(LISTE_ENTITES)
-    LISTE_BALLES = LISTE_ENTITES.copy()
+        
+        
+        
+        
+    return
     
     
     
 def bouger_balles():
     global VITESSE_BALLES, LISTE_BALLES
-    print(LISTE_BALLES)
-    for i in range (len(LISTE_BALLES)):
-        LISTE_BALLES[i][0] -= VITESSE_BALLES
-    print(LISTE_BALLES)
+    
+    for v in LISTE_ENTITES:
+        v[2] -= VITESSE_BALLES
+        if v[2] < -20:
+            v[2] = v[0]
 
     
 
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y,FIRST_TIME
+    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y,LISTE_BALLES
     
     
     
@@ -135,7 +132,7 @@ def draw():
 
     if STATUT_GAME == "PLAYING":
         pyxel.cls(6)
-        pyxel.frame_count
+        
 
         
             
@@ -143,9 +140,11 @@ def draw():
     
         for i in range(VIE):
             pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
-        for v in LISTE_BALLES:
-            # print('v',v)
-            pyxel.blt(v[0],v[1], 0,0,40,80,8,8)
+        
+        
+        for v in LISTE_ENTITES:
+            # affichage des balles
+            pyxel.blt(v[2],v[3],0,0,80,-16,16, colkey=2)
 
         
 
@@ -153,8 +152,8 @@ def draw():
         pyxel.blt(PLAYER_X, PLAYER_Y, 0, 0, 16, 16, 16, colkey=2, )
         pyxel.blt(PLAYER_X-1, PLAYER_Y+5, 0, 32, 112, 16, 16, colkey=2)
         
-        for entite in LISTE_ENTITES:
-            mob(entite[0], entite[1], zombie)
+        for i in range(len(LISTE_ENTITES)):
+            pyxel.blt(LISTE_ENTITES[i][0], LISTE_ENTITES[i][1], 0, TUILE_ZOMBIE[SKIN][0], TUILE_ZOMBIE[SKIN][1], TUILE_ZOMBIE[SKIN][2],TUILE_ZOMBIE[SKIN][3], colkey=2)
         
         
     
