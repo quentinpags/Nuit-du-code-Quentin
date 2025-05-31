@@ -12,7 +12,7 @@ SKIN = 0
 
 
 LISTE_ENTITES =[]
-VITESSE_BALLES = 3
+LIMITE_VITESSE_BALLES_NIVEAU = 3
 
 
 pyxel.init(128, 128, title="Chevalliay")
@@ -34,12 +34,12 @@ STATUT_GAME = "PLAYING"
 
 
 def creation_mob():
-        global LISTE_ENTITES,WIDTH,HEIGHT
+        global LISTE_ENTITES,WIDTH,HEIGHT,LIMITE_VITESSE_BALLES_NIVEAU
         
         if randint(0, 5) == 0 and len(LISTE_ENTITES) < 5:
             val_x = WIDTH-15
             val_y = randint(10, HEIGHT-10)
-            LISTE_ENTITES.append([val_x, val_y,val_x,val_y])
+            LISTE_ENTITES.append([val_x, val_y,val_x,val_y, randint(1,LIMITE_VITESSE_BALLES_NIVEAU)])
             
        
             
@@ -112,12 +112,13 @@ def update():
     
     
 def bouger_balles():
-    global VITESSE_BALLES, LISTE_BALLES
+    global VITESSE_BALLES, LIMITE_VITESSE_BALLES_NIVEAU
     
     for v in LISTE_ENTITES:
-        v[2] -= VITESSE_BALLES
+        v[2] -= v[4]
         if v[2] < -20:
             v[2] = v[0]
+            v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
 
     
 
