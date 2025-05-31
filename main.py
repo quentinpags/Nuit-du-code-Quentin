@@ -36,25 +36,34 @@ STATUT_GAME = "PLAYING"
 def creation_mob():
         global LISTE_ENTITES,WIDTH,HEIGHT,LIMITE_VITESSE_BALLES_NIVEAU
         
-        if randint(0, 5) == 0 and len(LISTE_ENTITES) < 5:
+        if randint(0, 5) == 0 and len(LISTE_ENTITES) < 8:
             val_x = WIDTH-15
             val_y = randint(10, HEIGHT-10)
             LISTE_ENTITES.append([val_x, val_y,val_x,val_y, randint(1,LIMITE_VITESSE_BALLES_NIVEAU)])
             
        
             
-        
+
 
     
 
-def degats_player():
+def degats_player(effet):
+    '''Degats recus par le joueur
+        peut etre "+1" , "-1"
+    '''
     global MODE, VIE
     if MODE == "DEV":
         return
-    else:
+    if effet == "-1":
         VIE -=1
-        if VIE == 0:
-            mort()
+        
+
+    if effet == "+1":
+        if VIE < 3:
+            VIE += 1
+
+    
+            
 
 
 
@@ -66,7 +75,10 @@ def mort():
     
     
 def update():
-    global SKIN,STATUT_GAME
+    global SKIN,STATUT_GAME,VIE
+
+    if VIE == 0:
+            mort()
      
     
     
@@ -97,7 +109,7 @@ def update():
             STATUT_GAME = "PAUSE"
 
     if pyxel.btn(pyxel.KEY_LEFT):
-            global VIE
+            
             mort()
             
 
