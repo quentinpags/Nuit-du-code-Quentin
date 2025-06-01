@@ -8,6 +8,7 @@ Created on Wed May 28 08:07:37 2025
 import pyxel
 from random import randint
 TUILE_ZOMBIE =[[128,16, 12,14]]#position de tuile
+TUILE_POTION_SOIN = [16,48]
 SKIN = 0
 
 HITBOX = 8
@@ -21,7 +22,7 @@ pyxel.init(128, 128, title="Chevalliay")
 pyxel.load("2.pyxres")
 WIDTH = pyxel.width
 HEIGHT = pyxel.height
-
+POTION = 3
 
 
 
@@ -32,7 +33,7 @@ VITESSE = 3
 TEMPS_IMMUNITE = 5
 
 VIE = 3
-VIE_MAX = 5
+VIE_MAX = 3
 STATUT_GAME = "PLAYING"
 
 
@@ -49,7 +50,7 @@ def collision():
                 print('collision', v)
                 v[2] = v[0]
                 v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
-                degats_player("-1")
+                effet_vie("-1")
                 
     
                 
@@ -80,12 +81,12 @@ def creation_mob():
 
     
 
-def degats_player(effet):
-    global ETAT,TEMPS_IMMUNITE
+def effet_vie(effet):
+    global ETAT,TEMPS_IMMUNITE,POTION,ETAT, VIE,VIE_MAX
     '''Degats recus par le joueur
         peut etre "+1" , "-1"
     '''
-    global ETAT, VIE,VIE_MAX
+     
     if ETAT[0] != "IMMUNITE":
 
         if effet == "-1":
@@ -96,6 +97,10 @@ def degats_player(effet):
     if effet == "+1":
         if VIE < VIE_MAX:
             VIE += 1
+    
+    if effet =="potion" and POTION >0 and VIE <VIE_MAX:
+        VIE = VIE_MAX
+        POTION -=1
 
     
             
@@ -129,12 +134,16 @@ def update():
         bouger_balles()
     
         pyxel.frame_count +=1
+        if pyxel.btnp(pyxel.KEY_P):
+            effet_vie("potion")
+
 
         if pyxel.btn(pyxel.KEY_UP):
             global PLAYER_Y, VITESSE
             if PLAYER_Y > 15:
                 PLAYER_Y -= VITESSE
-            
+        
+        
 
         elif pyxel.btn(pyxel.KEY_DOWN):
             if PLAYER_Y < pyxel.height-20:
@@ -200,7 +209,9 @@ def draw():
         
     
         for i in range(VIE):
-            pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
+            pyxel.blt(9*(i+1)-7, 5, 0, 115, 52, 10, 9, colkey=2)
+        for i in range(POTION):
+            pyxel.blt(20+7*(i+1),2 , 0, TUILE_POTION_SOIN[0], TUILE_POTION_SOIN[1], 16, 16, colkey=2)
         
         
         for v in LISTE_ENTITES:
