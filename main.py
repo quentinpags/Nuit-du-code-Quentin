@@ -7,49 +7,56 @@ Created on Wed May 28 08:07:37 2025
 
 import pyxel
 from random import randint
-TUILE_ZOMBIE =[[128,16, 12,14]]#position de tuile
-TUILE_POTION_SOIN = [16,48]
-SKIN = 0
 
-HITBOX = 8
-LISTE_ENTITES =[]
-LIMITE_VITESSE_BALLES_NIVEAU = 3
-ETAT = ["NORMAL",0]
+
+
+
+
+
+
+
 
 
 pyxel.init(128, 128, title="Chevalliay")
-#play(0, 2,loop= True)#import de sons
+
 pyxel.load("2.pyxres")
 WIDTH = pyxel.width
 HEIGHT = pyxel.height
-POTION = 3
+
+
+RESSOURCES_TUILES = {"TUILE_ZOMBIE" :[128,16, 12,14],
+                     "TUILE_POTION_SOIN" : [16,48]}
+PLAYER = {"PLAYER_X" : 0 ,
+          "PLAYER_Y" : 50,
+            "VIE" :3,
+              "ETAT" : ["NORMAL",0],
+                "MODE": "DEV",
+                "HITBOX" : 8,
+                  "POTION" : 3,
+                    "VITESSE" : 3}
+LISTE_ENTITES =[]
 
 
 
-
-PLAYER_X = 0
-PLAYER_Y = 50
-VITESSE = 3
+LIMITE_VITESSE_BALLES_NIVEAU = 3
 TEMPS_IMMUNITE = 5
-
-VIE = 3
 VIE_MAX = 3
 STATUT_GAME = "PLAYING"
 
 
 
 def collision():
-    '''actions suivant la collision d'une balle avec le joueur'''
-    global LISTE_ENTITES, PLAYER_X,PLAYER_Y,HITBOX,LIMITE_VITESSE_BALLES_NIVEAU
+    '''Verifie les collisions entre le joueur et les balles ennemies'''
+    global LISTE_ENTITES, PLAYER,LIMITE_VITESSE_BALLES_NIVEAU
     
     for v in LISTE_ENTITES:
-        if v[2] <= PLAYER_X + HITBOX and v[2] >= PLAYER_X-HITBOX:
+        if v["valeur_x_balle"] <= PLAYER["PLAYER_X"] + PLAYER["HITBOX"] and v["valeur_x_balle"] >= PLAYER["PLAYER_X"] -PLAYER["HITBOX"]:
             # verifie les collisions sur les x
-            if v[3] <= PLAYER_Y + HITBOX+5 and v[3] >= PLAYER_Y-HITBOX:
+            if v["valeur_y_balle"] <= PLAYER["PLAYER_Y"] + PLAYER["HITBOX"]+5 and v["valeur_y_balle"] >= PLAYER["PLAYER_Y"] -PLAYER["HITBOX"]:
                 # verifie les collisions sur les y
                 print('collision', v)
-                v[2] = v[0]
-                v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+                v["valeur_x_balle"] = v["valeur_x"]
+                v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
                 effet_vie("-1")
                 
     
@@ -58,6 +65,7 @@ def collision():
 
 
 def creation_mob():
+        '''Cree les mages ennemis'''
         global LISTE_ENTITES,WIDTH,HEIGHT,LIMITE_VITESSE_BALLES_NIVEAU
         
         
@@ -73,7 +81,7 @@ def creation_mob():
             val_x = WIDTH-12
             
             
-            LISTE_ENTITES.append([val_x, val_y,val_x,val_y, randint(1,LIMITE_VITESSE_BALLES_NIVEAU)])
+            LISTE_ENTITES.append({"valeur_x": val_x, "valeur_y" :val_y, "valeur_x_balle" :val_x, "valeur_y_balle" :val_y, "vitesse_balle" :randint(1,LIMITE_VITESSE_BALLES_NIVEAU)})
             
        
             
@@ -82,27 +90,26 @@ def creation_mob():
     
 
 def effet_vie(effet):
-    global ETAT,TEMPS_IMMUNITE,POTION,ETAT, VIE,VIE_MAX
+    global TEMPS_IMMUNITE, PLAYER,VIE_MAX
     '''Degats recus par le joueur
         peut etre "+1" , "-1"
     '''
      
-    if ETAT[0] != "IMMUNITE":
+    if PLAYER["ETAT"][0] != "IMMUNITE":
 
         if effet == "-1":
-            VIE -=1
+            PLAYER["VIE"] -=1
             immunite(TEMPS_IMMUNITE)
             
 
     if effet == "+1":
-        if VIE < VIE_MAX:
-            VIE += 1
+        if PLAYER["VIE"] < VIE_MAX:
+            PLAYER["VIE"] += 1
     
-    if effet =="potion" and POTION >0 and VIE <VIE_MAX:
-        VIE = VIE_MAX
-        POTION -=1
+    if effet =="potion +1" and PLAYER["POTION"] >0 and PLAYER["VIE"] <VIE_MAX:
+        PLAYER["VIE"] = VIE_MAX
+        PLAYER["POTION"] -=1
 
-    
             
 
 
@@ -115,17 +122,17 @@ def mort():
     
     
 def update():
-    global SKIN,STATUT_GAME,VIE,ETAT
-    print(LISTE_ENTITES)
+    global STATUT_GAME,PLAYER
+    
 
-    if VIE == 0:
+    if PLAYER["VIE"] == 0:
             mort()
 
-    if ETAT[0] == 'IMMUNITE':
+    if PLAYER["ETAT"][0] == 'IMMUNITE':
             
-        ETAT[1] -= 1
-        if ETAT[1] == 0:
-            ETAT[0] = "NORMAL"
+        PLAYER["ETAT"][1] -= 1
+        if PLAYER["ETAT"][1] == 0:
+            PLAYER["ETAT"][0] = "NORMAL"
      
     
     
@@ -134,20 +141,20 @@ def update():
         bouger_balles()
     
         pyxel.frame_count +=1
-        if pyxel.btnp(pyxel.KEY_P):
-            effet_vie("potion")
+        if pyxel.btnp(pyxel.KEY_LEFT):
+            effet_vie("potion +1")
 
 
         if pyxel.btn(pyxel.KEY_UP):
-            global PLAYER_Y, VITESSE
-            if PLAYER_Y > 15:
-                PLAYER_Y -= VITESSE
+            
+            if PLAYER["PLAYER_Y"] > 15:
+                PLAYER["PLAYER_Y"] -= PLAYER["VITESSE"]
         
         
 
         elif pyxel.btn(pyxel.KEY_DOWN):
-            if PLAYER_Y < pyxel.height-20:
-                PLAYER_Y += VITESSE
+            if PLAYER["PLAYER_Y"] < pyxel.height-20:
+                PLAYER["PLAYER_Y"] += PLAYER["VITESSE"]
         collision()
 
         
@@ -160,9 +167,9 @@ def update():
         elif not STATUT_GAME == "END":
             STATUT_GAME = "PAUSE"
 
-    if pyxel.btn(pyxel.KEY_LEFT):
+    if pyxel.btnp(pyxel.KEY_T) and PLAYER["MODE"]== "DEV":
+            print("TEST de mort",mort())
             
-            mort()
             
 
     
@@ -174,27 +181,27 @@ def update():
     return
     
 def immunite(temps):
-    '''donne l'immotalite au joueur pendant la duree determinee'''
-    global ETAT
+    '''Donne l'immotalite au joueur pendant la duree determinee'''
+    global PLAYER
     temps_immunite = 30 * temps
-    ETAT = ["IMMUNITE",temps_immunite]
+    PLAYER["ETAT"] = ["IMMUNITE",temps_immunite]
 
     
 def bouger_balles():
     global LIMITE_VITESSE_BALLES_NIVEAU
     
     for v in LISTE_ENTITES:
-        v[2] -= v[4]
-        if v[2] < -20:
-            v[2] = v[0]
-            v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+        v["valeur_x_balle"] -= v["vitesse_balle"]
+        if v["valeur_x_balle"] < -20:
+            v["valeur_x_balle"] = v["valeur_x"]
+            v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
 
     
 
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y
+    global LISTE_ENTITES,STATUT_GAME,PLAYER
     
     
     
@@ -208,24 +215,24 @@ def draw():
             
         
     
-        for i in range(VIE):
+        for i in range(PLAYER["VIE"]):
             pyxel.blt(9*(i+1)-7, 5, 0, 115, 52, 10, 9, colkey=2)
-        for i in range(POTION):
-            pyxel.blt(20+7*(i+1),2 , 0, TUILE_POTION_SOIN[0], TUILE_POTION_SOIN[1], 16, 16, colkey=2)
+        for i in range(PLAYER["POTION"]):
+            pyxel.blt(20+7*(i+1),2 , 0, RESSOURCES_TUILES["TUILE_POTION_SOIN"][0], RESSOURCES_TUILES["TUILE_POTION_SOIN"][1], 16, 16, colkey=2)
         
         
         for v in LISTE_ENTITES:
             # affichage des balles
-            pyxel.blt(v[2],v[3],0,0,80,-16,16, colkey=2)
+            pyxel.blt(v["valeur_x_balle"],v["valeur_y_balle"],0,0,80,-16,16, colkey=2)
 
         
 
         
-        pyxel.blt(PLAYER_X, PLAYER_Y, 0, 0, 16, 16, 16, colkey=2, )
-        pyxel.blt(PLAYER_X-1, PLAYER_Y+5, 0, 32, 112, 16, 16, colkey=2)
+        pyxel.blt(PLAYER["PLAYER_X"], PLAYER["PLAYER_Y"], 0, 0, 16, 16, 16, colkey=2, )
+        pyxel.blt(PLAYER["PLAYER_X"] -1, PLAYER["PLAYER_Y"] +5, 0, 32, 112, 16, 16, colkey=2)
         
         for i in range(len(LISTE_ENTITES)):
-            pyxel.blt(LISTE_ENTITES[i][0], LISTE_ENTITES[i][1], 0, TUILE_ZOMBIE[SKIN][0], TUILE_ZOMBIE[SKIN][1], TUILE_ZOMBIE[SKIN][2],TUILE_ZOMBIE[SKIN][3], colkey=2)
+            pyxel.blt(LISTE_ENTITES[i]["valeur_x"], LISTE_ENTITES[i]["valeur_y"], 0, RESSOURCES_TUILES["TUILE_ZOMBIE"][0], RESSOURCES_TUILES["TUILE_ZOMBIE"][1], RESSOURCES_TUILES["TUILE_ZOMBIE"][2],RESSOURCES_TUILES["TUILE_ZOMBIE"][3], colkey=2)
         
         
     
@@ -242,8 +249,8 @@ def draw():
         
         pyxel.cls(6)
         
-        pyxel.blt(PLAYER_X,PLAYER_Y, 0,48,112, 16,16, colkey=2)
-        pyxel.blt(PLAYER_X-1, PLAYER_Y+5, 0, 32, 112, 16, 16, colkey=2)
+        pyxel.blt(PLAYER["PLAYER_X"],PLAYER["PLAYER_Y"], 0,48,112, 16,16, colkey=2)
+        pyxel.blt(PLAYER["PLAYER_X"]-1, PLAYER["PLAYER_Y"]+5, 0, 32, 112, 16, 16, colkey=2)
 
         
         
@@ -257,10 +264,6 @@ def draw():
             pyxel.text((pyxel.width - len(chaine_de_caractere) * 4) // 2, (pyxel.height - 8) // 2, chaine_de_caractere, 7)
     
     if STATUT_GAME == "PAUSE":
-        
-    
-        for i in range(VIE):
-            pyxel.blt(4*(i+1), 5, 0, 115, 52, 10, 9, colkey=2)
         pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "PAUSE", 7)
 
 
