@@ -13,6 +13,7 @@ SKIN = 0
 HITBOX = 8
 LISTE_ENTITES =[]
 LIMITE_VITESSE_BALLES_NIVEAU = 3
+ETAT = ["NORMAL",0]
 
 
 pyxel.init(128, 128, title="Chevalliay")
@@ -28,14 +29,16 @@ HEIGHT = pyxel.height
 PLAYER_X = 0
 PLAYER_Y = 50
 VITESSE = 3
-MODE = "PLAYER"
+TEMPS_IMMUNITE = 5
+
 VIE = 3
+VIE_MAX = 5
 STATUT_GAME = "PLAYING"
 
 
 
 def collision():
-    '''renvoie true s'il y a collision'''
+    '''actions suivant la collision d'une balle avec le joueur'''
     global LISTE_ENTITES, PLAYER_X,PLAYER_Y,HITBOX,LIMITE_VITESSE_BALLES_NIVEAU
     
     for v in LISTE_ENTITES:
@@ -43,10 +46,11 @@ def collision():
             # verifie les collisions sur les x
             if v[3] <= PLAYER_Y + HITBOX+5 and v[3] >= PLAYER_Y-HITBOX:
                 # verifie les collisions sur les y
-                print('collision')
-                v[3] += WIDTH
+                print('collision', v)
+                v[2] = v[0]
                 v[4] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
                 degats_player("-1")
+                
     
                 
             # si le bullet est inferieur 
@@ -77,18 +81,20 @@ def creation_mob():
     
 
 def degats_player(effet):
+    global ETAT,TEMPS_IMMUNITE
     '''Degats recus par le joueur
         peut etre "+1" , "-1"
     '''
-    global MODE, VIE
-    if MODE == "DEV":
-        return
-    if effet == "-1":
-        VIE -=1
-        
+    global ETAT, VIE,VIE_MAX
+    if ETAT[0] != "IMMUNITE":
+
+        if effet == "-1":
+            VIE -=1
+            immunite(TEMPS_IMMUNITE)
+            
 
     if effet == "+1":
-        if VIE < 3:
+        if VIE < VIE_MAX:
             VIE += 1
 
     
@@ -104,10 +110,17 @@ def mort():
     
     
 def update():
-    global SKIN,STATUT_GAME,VIE
+    global SKIN,STATUT_GAME,VIE,ETAT
+    print(LISTE_ENTITES)
 
     if VIE == 0:
             mort()
+
+    if ETAT[0] == 'IMMUNITE':
+            
+        ETAT[1] -= 1
+        if ETAT[1] == 0:
+            ETAT[0] = "NORMAL"
      
     
     
@@ -151,10 +164,15 @@ def update():
         
     return
     
-    
+def immunite(temps):
+    '''donne l'immotalite au joueur pendant la duree determinee'''
+    global ETAT
+    temps_immunite = 30 * temps
+    ETAT = ["IMMUNITE",temps_immunite]
+
     
 def bouger_balles():
-    global VITESSE_BALLES, LIMITE_VITESSE_BALLES_NIVEAU
+    global LIMITE_VITESSE_BALLES_NIVEAU
     
     for v in LISTE_ENTITES:
         v[2] -= v[4]
@@ -167,7 +185,7 @@ def bouger_balles():
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y,LISTE_BALLES
+    global LISTE_ENTITES,STATUT_GAME,PLAYER_X, PLAYER_Y
     
     
     
