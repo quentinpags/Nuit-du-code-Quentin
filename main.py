@@ -16,7 +16,6 @@ SCORE = 0
 
 
 
-PLATEFORME = "Manette"
 pyxel.init(128, 128, title="Chevalliay")
 
 pyxel.load("2.pyxres")
@@ -172,7 +171,7 @@ def supr_sprite():
             del LISTE_ENTITES[i]
 
 def update():
-    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE
+    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE,LIST_FLECHES
     print(SCORE)
     
     
@@ -238,7 +237,22 @@ def update():
     if pyxel.btnp(pyxel.KEY_D) and PLAYER["MODE"]== "DEV":
             print("TEST de mort",mort())
     
-            
+    if STATUT_GAME == "END" and pyxel.btnp(pyxel.KEY_KP_ENTER) :
+        
+        global LISTE_ENTITES
+        LISTE_ENTITES =[]
+        LIST_FLECHES = []
+        STATUT_GAME = "PLAYING"
+        PLAYER = {"PLAYER_X" : 0 ,
+          "PLAYER_Y" : 50,
+            "VIE" :3,
+              "ETAT" : ["NORMAL",0],
+                "MODE": "DEV",
+                "HITBOX" : 8,
+                  "POTION" : 3,
+                    "VITESSE" : 3,
+                    "VIE_MAX" : 3}
+        
             
 
     
@@ -326,6 +340,7 @@ def draw():
         
     
     if STATUT_GAME == "END":
+        global SCORE
         
         
 
@@ -348,9 +363,12 @@ def draw():
     
         if pyxel.frame_count % 30 < 25:  # visible pendant 15 frames sur 30
             pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "You Lose", 7)
+            SCORE = 0
             chaine_de_caractere = "PUSH ENTER TO START"
             # pyxel.text((pyxel.height-114)//2, (pyxel.width-114)//2, 7)
             pyxel.text((pyxel.width - len(chaine_de_caractere) * 4) // 2, (pyxel.height - 8) // 2, chaine_de_caractere, 7)
+
+        
     
     if STATUT_GAME == "PAUSE":
         pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "PAUSE", 7)
