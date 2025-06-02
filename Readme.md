@@ -1,2 +1,5 @@
-url docu :
-https://github.com/kitao/pyxel/blob/main/docs/README.fr.md
+Ce fichier est la continuation d'un jeu commence dans le cadre de l'événement "La nuit du code" 2025.
+
+L'equipe ayant créé le jeu était composée de Quentin, Hugo,Noé, Aloïs.
+
+Je laisse le jeu ouvert aux forks
