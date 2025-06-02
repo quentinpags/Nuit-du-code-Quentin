@@ -8,7 +8,7 @@ Created on Wed May 28 08:07:37 2025
 import pyxel
 from random import randint
 
-
+SCORE = 0
 
 
 
@@ -123,7 +123,7 @@ def effet_vie(effet):
             
 
 def collision_ennemi():
-    global HITBOX_ENNEMIS
+    global HITBOX_ENNEMIS,SCORE
     
     for fleches in LIST_FLECHES:
         i = -1
@@ -139,6 +139,7 @@ def collision_ennemi():
                         
                         del LISTE_ENTITES[i]["valeur_x"]
                         LISTE_ENTITES[i]["SUPR"] = "WAITING"
+                        SCORE +=1
                         
             except:
                 pass
@@ -171,7 +172,8 @@ def supr_sprite():
             del LISTE_ENTITES[i]
 
 def update():
-    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES
+    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE
+    print(SCORE)
     
     
 
