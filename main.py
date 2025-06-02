@@ -26,7 +26,8 @@ HEIGHT = pyxel.height
 
 RESSOURCES_TUILES = {"TUILE_ZOMBIE" :[128,16, 12,14],
                      "TUILE_POTION_SOIN" : [16,48],
-                     "SKIN_BALLES": [{"x":0,"y":80},{"x":16,"y":80},{"x":32,"y":80}]
+                     "SKIN_BALLES": [{"x":0,"y":80},{"x":16,"y":80},{"x":32,"y":80}],
+                        "FLECHES": {"x":132,"y":72, "taille_x":9,"taille_y":1}
                      }
 PLAYER = {"PLAYER_X" : 0 ,
           "PLAYER_Y" : 50,
@@ -38,12 +39,14 @@ PLAYER = {"PLAYER_X" : 0 ,
                     "VITESSE" : 3,
                     "VIE_MAX" : 3}
 LISTE_ENTITES =[]
+LIST_FLECHES = []
+HITBOX_ENNEMIS = [7]
 
-
+DEV = 0
 
 LIMITE_VITESSE_BALLES_NIVEAU = 3
 TEMPS_IMMUNITE = 5
-
+VITESSE_MAX_BALLES = 3
 STATUT_GAME = "PLAYING"
 
 
@@ -57,10 +60,14 @@ def collision():
             # verifie les collisions sur les x
             if v["valeur_y_balle"] <= PLAYER["PLAYER_Y"] + PLAYER["HITBOX"]+5 and v["valeur_y_balle"] >= PLAYER["PLAYER_Y"] -PLAYER["HITBOX"]:
                 # verifie les collisions sur les y
-                print('collision', v)
-                v["valeur_x_balle"] = v["valeur_x"]
-                v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
-                effet_vie("-1")
+                try:
+                    effet_vie("-1")
+                    v["valeur_x_balle"] = pyxel.width +30
+                    v["valeur_x_balle"] = v["valeur_x"]
+                    v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+                    
+                except:
+                    pass
                 
     
                 
@@ -84,7 +91,7 @@ def creation_mob():
             val_x = WIDTH-12
             
             
-            LISTE_ENTITES.append({"valeur_x": val_x, "valeur_y" :val_y, "valeur_x_balle" :val_x, "valeur_y_balle" :val_y, "vitesse_balle" :randint(1,LIMITE_VITESSE_BALLES_NIVEAU), "SKIN_BALLE":randint(0,2)})
+            LISTE_ENTITES.append({"valeur_x": val_x, "valeur_y" :val_y, "valeur_x_balle" :val_x, "valeur_y_balle" :val_y, "vitesse_balle" :randint(1,LIMITE_VITESSE_BALLES_NIVEAU), "SKIN_BALLE":randint(0,2),"SUPR":False})
             
        
             
@@ -98,7 +105,7 @@ def effet_vie(effet):
         peut etre "+1" , "-1"
     '''
      
-    if PLAYER["ETAT"][0] != "IMMUNITE":
+    if PLAYER["ETAT"][0] != "IMMUNITE" and not DEV:
 
         if effet == "-1":
             PLAYER["VIE"] -=1
@@ -115,17 +122,57 @@ def effet_vie(effet):
 
             
 
+def collision_ennemi():
+
+    for fleches in LIST_FLECHES:
+        i = -1
+        for ennemis in LISTE_ENTITES:
+            i+=1
+            try:
+                if fleches["FLECHE_X"] > ennemis["valeur_x"] -15 and fleches["FLECHE_X"] < ennemis["valeur_x"] +15:
+                    if fleches["FLECHE_Y"] > ennemis["valeur_y"] -15 and fleches["FLECHE_Y"] < ennemis["valeur_y"] +15:
+                        print("collision ennemi")
+                        
+                        print(ennemis["valeur_y"])
+                        print(LISTE_ENTITES[i]["valeur_y"])
+                        
+                        del LISTE_ENTITES[i]["valeur_x"]
+                        LISTE_ENTITES[i]["SUPR"] = "WAITING"
+                        
+            except:
+                pass
+                    # LISTE_ENTITES.pop([i]["valeur_x"])
+                    # LISTE_ENTITES.pop([i]["valeur_y"])
+
+
+
+        
 
 
 
 def mort():
-    global STATUT_GAME
+    global STATUT_GAME,PLAYER
     STATUT_GAME = "END"
 
-    
-    
+def creation_fleche():        
+    """creation de fleches de list_fleche"""
+    pyxel.blt(PLAYER["PLAYER_X"] +3, PLAYER["PLAYER_Y"] +7, 0, 132, 72, 8, 1)
+
+def bouger_fleches():
+    global LIST_FLECHES
+    for v in LIST_FLECHES:
+        v["FLECHE_X"] += v["VITESSE"]
+
+def supr_sprite():
+    i=-1
+    for v in LISTE_ENTITES:
+        i +=1
+        if v["SUPR"] == True:
+            del LISTE_ENTITES[i]
+
 def update():
-    global STATUT_GAME,PLAYER
+    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES
+    
     
 
     if PLAYER["VIE"] == 0:
@@ -138,14 +185,30 @@ def update():
             PLAYER["ETAT"][0] = "NORMAL"
      
     
-    
+
+
+
     if STATUT_GAME == "PLAYING":
         creation_mob()
         bouger_balles()
+        collision_ennemi()
+        supr_sprite()
+        try:
+            bouger_fleches()
+            
+
+        except:
+            pass
+
+        
     
         pyxel.frame_count +=1
         if pyxel.btnp(pyxel.KEY_LEFT):
             effet_vie("potion +1")
+
+        if pyxel.btnp(pyxel.KEY_SPACE):  
+            pyxel.play(0, 3,tick=1)
+            LIST_FLECHES.append({"FLECHE_X": PLAYER["PLAYER_X"] +8,"FLECHE_Y": PLAYER["PLAYER_Y"] +8, "VITESSE":PLAYER["VITESSE"]})
 
 
         if pyxel.btn(pyxel.KEY_UP):
@@ -170,8 +233,9 @@ def update():
         elif not STATUT_GAME == "END":
             STATUT_GAME = "PAUSE"
 
-    if pyxel.btnp(pyxel.KEY_T) and PLAYER["MODE"]== "DEV":
+    if pyxel.btnp(pyxel.KEY_D) and PLAYER["MODE"]== "DEV":
             print("TEST de mort",mort())
+    
             
             
 
@@ -191,20 +255,32 @@ def immunite(temps):
 
     
 def bouger_balles():
-    global LIMITE_VITESSE_BALLES_NIVEAU
-    
+    global LIMITE_VITESSE_BALLES_NIVEAU, LISTE_ENTITES
+    i = -1
     for v in LISTE_ENTITES:
-        v["valeur_x_balle"] -= v["vitesse_balle"]
-        if v["valeur_x_balle"] < -20:
-            v["valeur_x_balle"] = v["valeur_x"]
-            v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+        i += 1
+        try:
+
+            v["valeur_x_balle"] -= v["vitesse_balle"]
+            if v["valeur_x_balle"] < -20:
+                if v["SUPR"] == "WAITING":
+                     v["SUPR"] = True
+
+                v["valeur_x_balle"] = v["valeur_x"]
+                
+                v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
+                
+        except:
+            pass
 
     
 
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,PLAYER
+    global LISTE_ENTITES,STATUT_GAME,PLAYER,RESSOURCES_TUILES
+
+    print(LISTE_ENTITES)
     
     
     
@@ -222,7 +298,11 @@ def draw():
             pyxel.blt(9*(i+1)-7, 5, 0, 115, 52, 10, 9, colkey=2)
         for i in range(PLAYER["POTION"]):
             pyxel.blt(20+7*(i+1),2 , 0, RESSOURCES_TUILES["TUILE_POTION_SOIN"][0], RESSOURCES_TUILES["TUILE_POTION_SOIN"][1], 16, 16, colkey=2)
-        
+        for v in LIST_FLECHES:
+            pyxel.blt(v["FLECHE_X"], v["FLECHE_Y"],0,RESSOURCES_TUILES["FLECHES"]["x"],
+                        RESSOURCES_TUILES["FLECHES"]["y"],RESSOURCES_TUILES["FLECHES"]["taille_x"],
+                                                                                       RESSOURCES_TUILES["FLECHES"]["taille_y"])
+
         
         for v in LISTE_ENTITES:
             # affichage des balles
@@ -236,8 +316,11 @@ def draw():
         pyxel.blt(PLAYER["PLAYER_X"] -1, PLAYER["PLAYER_Y"] +5, 0, 32, 112, 16, 16, colkey=2)
         
         for i in range(len(LISTE_ENTITES)):
-            pyxel.blt(LISTE_ENTITES[i]["valeur_x"], LISTE_ENTITES[i]["valeur_y"], 0, RESSOURCES_TUILES["TUILE_ZOMBIE"][0], RESSOURCES_TUILES["TUILE_ZOMBIE"][1], RESSOURCES_TUILES["TUILE_ZOMBIE"][2],RESSOURCES_TUILES["TUILE_ZOMBIE"][3], colkey=2)
-        
+            try:
+
+                pyxel.blt(LISTE_ENTITES[i]["valeur_x"], LISTE_ENTITES[i]["valeur_y"], 0, RESSOURCES_TUILES["TUILE_ZOMBIE"][0], RESSOURCES_TUILES["TUILE_ZOMBIE"][1], RESSOURCES_TUILES["TUILE_ZOMBIE"][2],RESSOURCES_TUILES["TUILE_ZOMBIE"][3], colkey=2)
+            except:
+                pass
         
     
     if STATUT_GAME == "END":
