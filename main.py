@@ -16,7 +16,7 @@ from random import randint
 
 
 
-
+PLATEFORME = "Manette"
 pyxel.init(128, 128, title="Chevalliay")
 
 pyxel.load("2.pyxres")
@@ -40,7 +40,7 @@ PLAYER = {"PLAYER_X" : 0 ,
                     "VIE_MAX" : 3}
 LISTE_ENTITES =[]
 LIST_FLECHES = []
-HITBOX_ENNEMIS = [7]
+HITBOX_ENNEMIS = 6
 
 DEV = 0
 
@@ -62,7 +62,7 @@ def collision():
                 # verifie les collisions sur les y
                 try:
                     effet_vie("-1")
-                    v["valeur_x_balle"] = pyxel.width +30
+                    v["valeur_x_balle"] = -30
                     v["valeur_x_balle"] = v["valeur_x"]
                     v["vitesse_balle"] = randint(1,LIMITE_VITESSE_BALLES_NIVEAU)
                     
@@ -123,14 +123,15 @@ def effet_vie(effet):
             
 
 def collision_ennemi():
-
+    global HITBOX_ENNEMIS
+    
     for fleches in LIST_FLECHES:
         i = -1
         for ennemis in LISTE_ENTITES:
             i+=1
             try:
-                if fleches["FLECHE_X"] > ennemis["valeur_x"] -15 and fleches["FLECHE_X"] < ennemis["valeur_x"] +15:
-                    if fleches["FLECHE_Y"] > ennemis["valeur_y"] -15 and fleches["FLECHE_Y"] < ennemis["valeur_y"] +15:
+                if fleches["FLECHE_X"] > ennemis["valeur_x"] -HITBOX_ENNEMIS and fleches["FLECHE_X"] < ennemis["valeur_x"] +HITBOX_ENNEMIS:
+                    if fleches["FLECHE_Y"] > ennemis["valeur_y"] -1 and fleches["FLECHE_Y"] < ennemis["valeur_y"] +14:
                         print("collision ennemi")
                         
                         print(ennemis["valeur_y"])
@@ -141,8 +142,7 @@ def collision_ennemi():
                         
             except:
                 pass
-                    # LISTE_ENTITES.pop([i]["valeur_x"])
-                    # LISTE_ENTITES.pop([i]["valeur_y"])
+                    
 
 
 
@@ -201,31 +201,31 @@ def update():
             pass
 
         
-    
+        
         pyxel.frame_count +=1
-        if pyxel.btnp(pyxel.KEY_LEFT):
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             effet_vie("potion +1")
 
-        if pyxel.btnp(pyxel.KEY_SPACE):  
+        if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):  
             pyxel.play(0, 3,tick=1)
             LIST_FLECHES.append({"FLECHE_X": PLAYER["PLAYER_X"] +8,"FLECHE_Y": PLAYER["PLAYER_Y"] +8, "VITESSE":PLAYER["VITESSE"]})
 
-
-        if pyxel.btn(pyxel.KEY_UP):
+        
+        if pyxel.btn(pyxel.KEY_UP)or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             
             if PLAYER["PLAYER_Y"] > 15:
                 PLAYER["PLAYER_Y"] -= PLAYER["VITESSE"]
         
         
 
-        elif pyxel.btn(pyxel.KEY_DOWN):
+        elif pyxel.btn(pyxel.KEY_DOWN)or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if PLAYER["PLAYER_Y"] < pyxel.height-20:
                 PLAYER["PLAYER_Y"] += PLAYER["VITESSE"]
         collision()
 
         
-
-    if pyxel.btnp(pyxel.KEY_RIGHT):
+    
+    if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START):
         
         if STATUT_GAME == "PAUSE":
             STATUT_GAME = "PLAYING"
@@ -280,7 +280,7 @@ def bouger_balles():
 def draw():
     global LISTE_ENTITES,STATUT_GAME,PLAYER,RESSOURCES_TUILES
 
-    print(LISTE_ENTITES)
+
     
     
     
