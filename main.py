@@ -25,7 +25,9 @@ HEIGHT = pyxel.height
 
 
 RESSOURCES_TUILES = {"TUILE_ZOMBIE" :[128,16, 12,14],
-                     "TUILE_POTION_SOIN" : [16,48]}
+                     "TUILE_POTION_SOIN" : [16,48],
+                     "SKIN_BALLES": [{"x":0,"y":80},{"x":16,"y":80},{"x":32,"y":80}]
+                     }
 PLAYER = {"PLAYER_X" : 0 ,
           "PLAYER_Y" : 50,
             "VIE" :3,
@@ -33,14 +35,15 @@ PLAYER = {"PLAYER_X" : 0 ,
                 "MODE": "DEV",
                 "HITBOX" : 8,
                   "POTION" : 3,
-                    "VITESSE" : 3}
+                    "VITESSE" : 3,
+                    "VIE_MAX" : 3}
 LISTE_ENTITES =[]
 
 
 
 LIMITE_VITESSE_BALLES_NIVEAU = 3
 TEMPS_IMMUNITE = 5
-VIE_MAX = 3
+
 STATUT_GAME = "PLAYING"
 
 
@@ -81,7 +84,7 @@ def creation_mob():
             val_x = WIDTH-12
             
             
-            LISTE_ENTITES.append({"valeur_x": val_x, "valeur_y" :val_y, "valeur_x_balle" :val_x, "valeur_y_balle" :val_y, "vitesse_balle" :randint(1,LIMITE_VITESSE_BALLES_NIVEAU)})
+            LISTE_ENTITES.append({"valeur_x": val_x, "valeur_y" :val_y, "valeur_x_balle" :val_x, "valeur_y_balle" :val_y, "vitesse_balle" :randint(1,LIMITE_VITESSE_BALLES_NIVEAU), "SKIN_BALLE":randint(0,2)})
             
        
             
@@ -90,7 +93,7 @@ def creation_mob():
     
 
 def effet_vie(effet):
-    global TEMPS_IMMUNITE, PLAYER,VIE_MAX
+    global TEMPS_IMMUNITE, PLAYER
     '''Degats recus par le joueur
         peut etre "+1" , "-1"
     '''
@@ -103,11 +106,11 @@ def effet_vie(effet):
             
 
     if effet == "+1":
-        if PLAYER["VIE"] < VIE_MAX:
+        if PLAYER["VIE"] < PLAYER["VIE_MAX"]:
             PLAYER["VIE"] += 1
     
-    if effet =="potion +1" and PLAYER["POTION"] >0 and PLAYER["VIE"] <VIE_MAX:
-        PLAYER["VIE"] = VIE_MAX
+    if effet =="potion +1" and PLAYER["POTION"] >0 and PLAYER["VIE"] <PLAYER["VIE_MAX"]:
+        PLAYER["VIE"] = PLAYER["VIE_MAX"]
         PLAYER["POTION"] -=1
 
             
@@ -223,6 +226,7 @@ def draw():
         
         for v in LISTE_ENTITES:
             # affichage des balles
+            
             pyxel.blt(v["valeur_x_balle"],v["valeur_y_balle"],0,0,80,-16,16, colkey=2)
 
         
