@@ -131,10 +131,7 @@ def collision_ennemi():
             try:
                 if fleches["FLECHE_X"] > ennemis["valeur_x"] -HITBOX_ENNEMIS and fleches["FLECHE_X"] < ennemis["valeur_x"] +HITBOX_ENNEMIS:
                     if fleches["FLECHE_Y"] > ennemis["valeur_y"] -1 and fleches["FLECHE_Y"] < ennemis["valeur_y"] +14:
-                        print("collision ennemi")
                         
-                        print(ennemis["valeur_y"])
-                        print(LISTE_ENTITES[i]["valeur_y"])
                         
                         del LISTE_ENTITES[i]["valeur_x"]
                         LISTE_ENTITES[i]["SUPR"] = "WAITING"
@@ -172,7 +169,7 @@ def supr_sprite():
 
 def update():
     global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE,LIST_FLECHES
-    print(SCORE)
+    
 
     if STATUT_GAME == 'DIDACTICIEL':
         if pyxel.btnp(pyxel.KEY_KP_ENTER) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START):
