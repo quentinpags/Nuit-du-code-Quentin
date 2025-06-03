@@ -294,7 +294,7 @@ def bouger_balles():
 
 
 def draw():
-    global LISTE_ENTITES,STATUT_GAME,PLAYER,RESSOURCES_TUILES
+    global LISTE_ENTITES,STATUT_GAME,PLAYER,RESSOURCES_TUILES,SCORE
 
 
     
@@ -328,6 +328,7 @@ def draw():
         
 
         
+        pyxel.text(55,7,f"SCORE:{SCORE}",0)
         pyxel.blt(PLAYER["PLAYER_X"], PLAYER["PLAYER_Y"], 0, 0, 16, 16, 16, colkey=2, )
         pyxel.blt(PLAYER["PLAYER_X"] -1, PLAYER["PLAYER_Y"] +5, 0, 32, 112, 16, 16, colkey=2)
         
@@ -340,7 +341,7 @@ def draw():
         
     
     if STATUT_GAME == "END":
-        global SCORE
+        
         
         
 
