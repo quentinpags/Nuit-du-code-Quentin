@@ -1,3 +1,17 @@
+HISTOIRE:
+
+
+Vous êtes dans une mission de la plus grande importance ; le destin de votre monde pèse sur vos épaules.
+Votre mission consiste à tuer le plus d'ennemi possible en évitant leurs balles.
+Pour cela vous avez 3 potions pour vous soigner et des flèches. 
+
+
+
+
+
+
+
+
 DESCRIPTION :
 Side scrawler shoot them up
 
@@ -13,4 +27,3 @@ Fin de partie : flèche droite
 SPECIFICITES :
 Tirer sur les ennemis pour les faire couler et augmenter votre score
 Eviter les ennemis
-
