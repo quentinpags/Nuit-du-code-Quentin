@@ -12,8 +12,8 @@ SCORE = 0
 
 
 
-
-
+NOMBRE_PARTIE = 1
+PRINT_PARTIE = 1
 
 
 pyxel.init(128, 128, title="Chevalliay")
@@ -122,6 +122,7 @@ def effet_vie(effet):
             
 
 def collision_ennemi():
+    '''Verifie la collision entre les balles du player et les ennemis'''
     global HITBOX_ENNEMIS,SCORE
     
     for fleches in LIST_FLECHES:
@@ -148,8 +149,15 @@ def collision_ennemi():
 
 
 def mort():
-    global STATUT_GAME,PLAYER
+    '''Action se deroulant apres la mort du joueur'''
+    global STATUT_GAME,PLAYER, NOMBRE_PARTIE,PRINT_PARTIE
+    if PRINT_PARTIE == NOMBRE_PARTIE:
+        print(f"Partie no{NOMBRE_PARTIE}","SCORE:",SCORE)
+        NOMBRE_PARTIE += 1
+        
     STATUT_GAME = "END"
+    
+    
 
 def creation_fleche():        
     """creation de fleches de list_fleche"""
@@ -168,7 +176,7 @@ def supr_sprite():
             del LISTE_ENTITES[i]
 
 def update():
-    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE,LIST_FLECHES
+    global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE,LIST_FLECHES,PRINT_PARTIE
     
 
     if STATUT_GAME == 'DIDACTICIEL':
@@ -257,6 +265,8 @@ def update():
                     "VITESSE" : 3,
                     "VIE_MAX" : 3}
         SCORE = 0
+        PRINT_PARTIE +=1
+        
         
             
 
