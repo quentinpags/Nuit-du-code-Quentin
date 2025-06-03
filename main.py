@@ -32,7 +32,7 @@ PLAYER = {"PLAYER_X" : 0 ,
           "PLAYER_Y" : 50,
             "VIE" :3,
               "ETAT" : ["NORMAL",0],
-                "MODE": "DEV",
+                "MODE": "PLAYING",
                 "HITBOX" : 8,
                   "POTION" : 3,
                     "VITESSE" : 3,
@@ -41,12 +41,12 @@ LISTE_ENTITES =[]
 LIST_FLECHES = []
 HITBOX_ENNEMIS = 6
 
-DEV = 0
+DEV = False
 
 LIMITE_VITESSE_BALLES_NIVEAU = 3
 TEMPS_IMMUNITE = 5
 VITESSE_MAX_BALLES = 3
-STATUT_GAME = "PLAYING"
+STATUT_GAME = "DIDACTICIEL"
 
 
 
@@ -78,11 +78,11 @@ def creation_mob():
         global LISTE_ENTITES,WIDTH,HEIGHT,LIMITE_VITESSE_BALLES_NIVEAU
         
         
-        
 
 
         if randint(0, 5) == 0 and len(LISTE_ENTITES) < 8:
-            if len(LISTE_ENTITES) <4:
+            tirage = randint(0,1)
+            if tirage == 0:
                 val_y = randint(10, HEIGHT//2)
             else:
                 val_y = randint(HEIGHT//2, HEIGHT-10)
@@ -173,6 +173,11 @@ def supr_sprite():
 def update():
     global STATUT_GAME,PLAYER,VITESSE_MAX_BALLES, SCORE,LIST_FLECHES
     print(SCORE)
+
+    if STATUT_GAME == 'DIDACTICIEL':
+        if pyxel.btnp(pyxel.KEY_KP_ENTER) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START):
+            STATUT_GAME = "PLAYING"
+
     
     
 
@@ -190,6 +195,8 @@ def update():
 
 
     if STATUT_GAME == "PLAYING":
+        if pyxel.btnp(pyxel.KEY_H):
+            STATUT_GAME = "DIDACTICIEL"
         creation_mob()
         bouger_balles()
         collision_ennemi()
@@ -252,6 +259,7 @@ def update():
                   "POTION" : 3,
                     "VITESSE" : 3,
                     "VIE_MAX" : 3}
+        SCORE = 0
         
             
 
@@ -296,14 +304,47 @@ def bouger_balles():
 def draw():
     global LISTE_ENTITES,STATUT_GAME,PLAYER,RESSOURCES_TUILES,SCORE
 
+    if STATUT_GAME == 'DIDACTICIEL':
+        pyxel.cls(6)
+        pyxel.text(2, 10, "H : HELP", 8)
+        pyxel.text(2, 18, "KEYBOARD commands:", 0)
+        
+        pyxel.text(2, 26, "UP/DOWN : Move player", 0)
+        pyxel.text(2,34 , "LEFT : HEAL", 0)
+        pyxel.text(2, 42, "RIGHT : PAUSE", 0)
+        pyxel.text(2, 42+8, "SPACE : SHOOT", 0)
+
+
+        pyxel.text(2, 62+8-5, "GAMEPAD commands:", 0)
+        
+        pyxel.text(2, 70+8-5, "UP/DOWN : Move player", 0)
+        pyxel.text(2,78 +8-5, "B : HEAL", 0)
+        pyxel.text(2, 86+8-5, "RIGHT : PAUSE", 0)
+        pyxel.text(2, 86+8+8-5, "X : SHOOT", 0)
+
+        pyxel.text(2, 86+8+8+8, "START or ENTER for start", 0)
+
+
+
+
+
+
+
+        
+        
+
+
+
 
     
     
     
+
     
 
     if STATUT_GAME == "PLAYING":
         pyxel.cls(6)
+        
         
 
         
@@ -364,10 +405,11 @@ def draw():
     
         if pyxel.frame_count % 30 < 25:  # visible pendant 15 frames sur 30
             pyxel.text((pyxel.height-30)//2, (pyxel.width-30)//2, "You Lose", 7)
-            SCORE = 0
+            
             chaine_de_caractere = "PUSH ENTER TO START"
             # pyxel.text((pyxel.height-114)//2, (pyxel.width-114)//2, 7)
             pyxel.text((pyxel.width - len(chaine_de_caractere) * 4) // 2, (pyxel.height - 8) // 2, chaine_de_caractere, 7)
+            pyxel.text((pyxel.width - len(f"Score: {SCORE}") * 4) // 2, (pyxel.height - 8) // 2+7, f"Score: {SCORE}", 0)
 
         
     
