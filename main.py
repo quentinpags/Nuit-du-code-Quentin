@@ -180,7 +180,7 @@ def update():
     
 
     if STATUT_GAME == 'DIDACTICIEL':
-        if pyxel.btnp(pyxel.KEY_KP_ENTER) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START) or pyxel.btnp(pyxel.KEY_S):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START):
             STATUT_GAME = "PLAYING"
 
     
@@ -243,13 +243,13 @@ def update():
         if STATUT_GAME == "PAUSE":
             STATUT_GAME = "PLAYING"
 
-        elif not STATUT_GAME == "END":
+        elif not STATUT_GAME == "END" and not STATUT_GAME == "DIDACTICIEL":
             STATUT_GAME = "PAUSE"
 
     if pyxel.btnp(pyxel.KEY_D) and PLAYER["MODE"]== "DEV":
             print("TEST de mort",mort())
     
-    if STATUT_GAME == "END" and pyxel.btnp(pyxel.KEY_KP_ENTER) :
+    if STATUT_GAME == "END" and pyxel.btnp(pyxel.KEY_RETURN) :
         
         global LISTE_ENTITES
         LISTE_ENTITES =[]
@@ -329,7 +329,7 @@ def draw():
         pyxel.text(2, 86+8-5, "RIGHT : PAUSE", 0)
         pyxel.text(2, 86+8+8-5, "X : SHOOT", 0)
 
-        pyxel.text(2, 86+8+8+8, "START or ENTER or S for start", 0)
+        pyxel.text(2, 86+8+8+8, "START or ENTER for start", 0)
 
 
 

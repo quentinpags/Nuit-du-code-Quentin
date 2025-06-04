@@ -5,6 +5,8 @@ Vous êtes dans une mission de la plus grande importance ; le destin de votre mo
 Votre mission consiste à tuer le plus d'ennemi possible en évitant leurs balles.
 Pour cela vous avez 3 potions pour vous soigner et des flèches. 
 
+Bonne chance
+
 
 
 

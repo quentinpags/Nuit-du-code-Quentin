@@ -2,5 +2,7 @@ Ce fichier est la continuation d'un jeu commence dans le cadre de l'événement 
 
 L'equipe ayant créé le jeu était composée de Quentin, Hugo,Noé, Aloïs.
 
+Le code dans les release est ma continuation du projet en solo avec un peu d'aide de mon frère.
+
+En cas de bug / crash veuillez creer une issue dans l'onglet du même nom.
 Je laisse le jeu ouvert aux forks.
-La version créé lors de la nuit du code est la première release.
