@@ -9,6 +9,8 @@ import pyxel
 from random import randint
 
 SCORE = 0
+print("Bienvenue dans mon jeu")
+print("Voici la liste de vos scores:")
 
 
 
