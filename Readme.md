@@ -6,3 +6,7 @@ Le code dans les release est ma continuation du projet en solo avec un peu d'aid
 
 En cas de bug / crash veuillez creer une issue dans l'onglet du même nom.
 Je laisse le jeu ouvert aux forks.
+
+
+
+![Capture d'écran 2025-06-07 125735](https://github.com/user-attachments/assets/68d8e9fa-2440-4f63-bd5e-63803e2fd017)
